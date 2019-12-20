@@ -5,16 +5,25 @@ const signin = (req, res) => {
 		google: "GoogleAuthProvider",
 		facebook: "FacebookAuthProvider"
 	};
-	var credential = firebase.auth[providers.req.body.type].credential(req.body.id_token);
-	return firebase
+	const credential = firebase.auth[providers.req.body.type].credential(
+		req.body.id_token
+	);
+	firebase
 		.auth()
 		.signInWithCredential(credential)
+		.then(user => {
+			return res.status(200).json({
+				status: "success",
+				message: "Authenticated",
+				data: user ? user : "No user data"
+			});
+		})
 		.catch(error => {
 			return res.status(500).json({
-                code: error.code,
-                message: error.message,
-                email: error.email
-            });
+				code: error.code,
+				message: error.message,
+				email: error.email
+			});
 		});
 };
 
