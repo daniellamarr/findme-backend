@@ -1,28 +1,39 @@
-const firebase = require("firebase");
+/* eslint-disable promise/no-nesting */
+const admin = require('firebase-admin');
+const generateToken = require('../../helpers/generateToken');
+
+const db = admin.firestore();
 
 const signin = (req, res) => {
-	const providers = {
-		google: "GoogleAuthProvider",
-		facebook: "FacebookAuthProvider"
-	};
-	const credential = firebase.auth[providers.req.body.type].credential(
-		req.body.id_token
-	);
-	firebase
-		.auth()
-		.signInWithCredential(credential)
-		.then(user => {
-			return res.status(200).json({
-				status: "success",
-				message: "Authenticated",
-				data: user ? user : "No user data"
-			});
-		})
+  const {email} = req.socialAuth.user;
+  return db.collection('users')
+    .where('email', '==', email)
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        return res.status(404).send({
+          success: false,
+          message: 'You are not yet signed up to Findme'
+        });
+      }
+      let data;
+      snapshot.forEach(doc => {
+        data = doc.data();
+        data.id = doc.id;
+      });
+      return res.status(200).send({
+        success: true,
+        message: 'You have successfully logged in to Findme',
+        data: {
+          user: data,
+          token: generateToken(data, '1y')
+        }
+      })
+    })
 		.catch(error => {
 			return res.status(500).json({
-				code: error.code,
-				message: error.message,
-				email: error.email
+        success: false,
+				message: error.message
 			});
 		});
 };
