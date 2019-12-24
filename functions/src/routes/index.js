@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const authRouter = require('./auth');
 const userRouter = require('./users');
+const categoryRouter = require('./categories');
 
 const routes = express();
 routes.use(bodyParser.urlencoded({extended: false}));
@@ -23,5 +24,6 @@ routes.use((req, res, next) => {
 
 routes.use('/auth', authRouter);
 routes.use('/users', userRouter);
+routes.use('/categories', categoryRouter);
 
 module.exports = routes;
