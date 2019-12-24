@@ -5,7 +5,6 @@ const db = admin.firestore();
 
 const UPDATE = (req, res) => {
   const {id} = req.payload;
-  console.log(JSON.stringify(req.payload), 'aa')
   const {firstname, lastname, phoneNumber, interests} = req.body;
 
   return db.collection('users')
@@ -24,6 +23,7 @@ const UPDATE = (req, res) => {
       data.lastname = lastname || data.lastname;
       data.phoneNumber = phoneNumber || data.phoneNumber;
       data.interests = interests || data.interests;
+      data.updated = new Date().getTime();
 
       return db.collection('users')
         .doc(id)
