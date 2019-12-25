@@ -53,9 +53,10 @@ const fileUpload = (req, res, next) => {
             if (err) {
               reject(err);
             }
+            const extension = filename.split('.')[1];
             const uniqueFilename = uuid();
             return resolve(
-              `https://storage.googleapis.com/${config.storageBucket}/${uniqueFilename}`,
+              `https://storage.googleapis.com/${config.storageBucket}/${uniqueFilename}.${extension}`,
             );
           });
         });
