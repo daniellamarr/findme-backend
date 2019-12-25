@@ -1,5 +1,6 @@
 const path = require('path');
 const Busboy = require('busboy');
+const uuid = require('uuid4');
 const { Storage } = require('@google-cloud/storage');
 const config = require('../../config/config.json');
 
@@ -52,8 +53,9 @@ const fileUpload = (req, res, next) => {
             if (err) {
               reject(err);
             }
+            const uniqueFilename = uuid();
             return resolve(
-              `https://storage.googleapis.com/${config.storageBucket}/${filename}`,
+              `https://storage.googleapis.com/${config.storageBucket}/${uniqueFilename}`,
             );
           });
         });

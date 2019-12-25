@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const {verifyToken, gCloudFileActions} = require('../../middleware');
+const {verifyToken, fileUpload} = require('../../middleware');
 const getExperiences = require('./getExperiences');
 const createExperience = require('./createExperience');
 const deleteExperience = require('./deleteExperience');
@@ -9,9 +9,9 @@ const experienceRouter = Router();
 
 experienceRouter.get('/', verifyToken, getExperiences);
 
-experienceRouter.post('/', verifyToken, gCloudFileActions.fileUpload, createExperience);
+experienceRouter.post('/', verifyToken, fileUpload, createExperience);
 
-experienceRouter.put('/:id', verifyToken, gCloudFileActions.fileUpload, updateExperience);
+experienceRouter.put('/:id', verifyToken, fileUpload, updateExperience);
 
 experienceRouter.delete('/:id', verifyToken, deleteExperience);
 

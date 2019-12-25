@@ -1,6 +1,6 @@
 /* eslint-disable promise/no-nesting */
 const admin = require("firebase-admin");
-const gCloudFileActions = require("../../middleware/gcloudStorage");
+const {deleteFile} = require("../../middleware/gcloudStorage");
 
 const db = admin.firestore();
 
@@ -77,8 +77,7 @@ const createExperience = (req, res) => {
 		})
 		.catch(error => {
 			const urlSplit = req.file.split("/");
-			return gCloudFileActions
-				.deleteFile(urlSplit[urlSplit.length - 1])
+			return deleteFile(urlSplit[urlSplit.length - 1])
 				.then(() => {
 					return res.status(500).send({
 						success: false,
