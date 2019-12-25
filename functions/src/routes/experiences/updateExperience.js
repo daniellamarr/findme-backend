@@ -15,7 +15,13 @@ const updateExperience = (req, res) => {
 		tags,
 		type
 	} = req.body;
-	const {id} = req.params;
+    const {id} = req.params;
+    if (!id) {
+		return res.status(400).json({
+			success: false,
+			message: "ID is required"
+		});
+	}
 	const types = {
 		event: {
 			startDate: req.body.startDate || null,
@@ -32,6 +38,12 @@ const updateExperience = (req, res) => {
 	return experienceRef
 		.get()
 		.then(docRef => {
+            if(!docRef.exists){
+                return res.status(404).json({
+                    success: false,
+                    message: 'Experience not found'
+                })
+            }
 			const experienceReqData = {
 				title,
 				categoryId,
