@@ -16,9 +16,14 @@ const getExperiences = (req, res) => {
 			return experience.startDate > now;
 		}
 	};
-	return db
+	let experienceRef = db
 		.collection("experiences")
-		.where("type", "==", req.query.type)
+		.where("type", "==", req.query.type);
+	// Query Params
+	if (req.query.category) {
+		experienceRef = experienceRef.where("categoryId", "==", req.query.cateory);
+	}
+	return experienceRef
 		.get()
 		.then(snapshot => {
 			let data = snapshot.docs.map(doc => {
