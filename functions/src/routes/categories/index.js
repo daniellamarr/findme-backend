@@ -1,9 +1,9 @@
-const express = require('express');
+const {Router} = require('express');
 const {verifyToken} = require('../../middleware');
 const getCategories = require('./getCategories');
 const addCategory = require('./addCategory');
 
-const categoryRouter = express.Router();
+const categoryRouter = Router();
 
 categoryRouter.get('/', verifyToken, getCategories);
 

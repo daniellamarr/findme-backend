@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const authRouter = require('./auth');
 const userRouter = require('./users');
 const categoryRouter = require('./categories');
+const experienceRouter = require('./experiences');
 
 const routes = express();
 routes.use(bodyParser.urlencoded({extended: false}));
@@ -25,5 +26,6 @@ routes.use((req, res, next) => {
 routes.use('/auth', authRouter);
 routes.use('/users', userRouter);
 routes.use('/categories', categoryRouter);
+routes.use('/experiences', experienceRouter);
 
 module.exports = routes;

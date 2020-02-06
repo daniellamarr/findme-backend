@@ -1,8 +1,8 @@
-const express = require('express');
+const {Router} = require('express');
 const UPDATE = require('./update');
 const {verifyToken} = require('../../middleware');
 
-const userRouter = express.Router();
+const userRouter = Router();
 
 userRouter.put('/', verifyToken, UPDATE);
 
