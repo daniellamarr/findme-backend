@@ -4,6 +4,7 @@ const admin = require("firebase-admin");
 const db = admin.firestore();
 
 const getExperiences = (req, res) => {
+	const {type = null} = req.query;
 	const now = new Date().getTime();
 	const eventFilter = {
 		all: experience => {
@@ -18,7 +19,7 @@ const getExperiences = (req, res) => {
 	};
 	return db
 		.collection("experiences")
-		.where("type", "==", req.query.type)
+		.where("type", "==", type)
 		.get()
 		.then(snapshot => {
 			let data = snapshot.docs.map(doc => {
@@ -33,11 +34,12 @@ const getExperiences = (req, res) => {
 				data
 			});
 		})
-		.catch(error =>
+		.catch(error =>{
+			console.log(error)
 			res.status(500).send({
 				success: false,
 				message: error.message
-			})
+			})}
 		);
 };
 

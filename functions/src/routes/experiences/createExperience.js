@@ -7,7 +7,7 @@ const db = admin.firestore();
 const createExperience = (req, res) => {
 	const {
 		title,
-		categoryId,
+		category,
 		description,
 		address,
 		capacity,
@@ -32,7 +32,7 @@ const createExperience = (req, res) => {
 	).filter(([k, v], i) => Boolean(v));
 	if (
 		!title ||
-		!categoryId ||
+		!category ||
 		!description ||
 		!address ||
 		!capacity ||
@@ -49,7 +49,7 @@ const createExperience = (req, res) => {
 		.collection("experiences")
 		.add({
 			title,
-			categoryId,
+			category,
 			description,
 			address,
 			capacity,
