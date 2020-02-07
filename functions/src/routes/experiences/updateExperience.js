@@ -69,7 +69,6 @@ const updateExperience = (req, res) => {
 				...filteredReqData,
 				updated: new Date().getTime()
 			};
-			console.log(experienceData);
 			return experienceRef.update(experienceData).then(() => {
 				if (imageUrl) {
 					const urlSplit = oldExperienceData.imageUrl.split("/");

@@ -11,7 +11,7 @@ experienceRouter.get('/', verifyToken, getExperiences);
 
 experienceRouter.post('/', verifyToken, fileUpload, createExperience);
 
-experienceRouter.put('/:id', fileUpload, updateExperience);
+experienceRouter.put('/:id',verifyToken, fileUpload, updateExperience);
 
 experienceRouter.delete('/:id', verifyToken, deleteExperience);
 
