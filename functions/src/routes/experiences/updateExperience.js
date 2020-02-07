@@ -69,6 +69,7 @@ const updateExperience = (req, res) => {
 				...filteredReqData,
 				updated: new Date().getTime()
 			};
+			console.log(experienceData);
 			return experienceRef.update(experienceData).then(() => {
 				if (imageUrl) {
 					const urlSplit = oldExperienceData.imageUrl.split("/");
@@ -80,12 +81,13 @@ const updateExperience = (req, res) => {
 								data: experienceData
 							})
 						);
+				} else {
+					return res.status(200).send({
+						success: true,
+						message: "Experience Updated",
+						data: experienceData
+					});
 				}
-				return res.status(200).send({
-					success: true,
-					message: "Experience Updated",
-					data: experienceData
-				});
 			});
 		})
 		.catch(error => {
