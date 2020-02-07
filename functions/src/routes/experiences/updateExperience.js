@@ -15,7 +15,8 @@ const updateExperience = (req, res) => {
 		tags,
 		type
 	} = req.body;
-    const {id} = req.params;
+	const {id} = req.params;
+	const [imageUrl] = req.files;
     if (!id) {
 		return res.status(400).json({
 			success: false,
@@ -51,7 +52,7 @@ const updateExperience = (req, res) => {
 				capacity,
 				contactPhone,
 				description,
-				imageUrl: req.file || null,
+				imageUrl: imageUrl || null,
 				tags: tags || [],
 				...types[type]
 			};
@@ -69,7 +70,7 @@ const updateExperience = (req, res) => {
 				updated: new Date().getTime()
 			};
 			return experienceRef.update(experienceData).then(() => {
-				if (req.file) {
+				if (imageUrl) {
 					const urlSplit = oldExperienceData.imageUrl.split("/");
 					return deleteFile(urlSplit[urlSplit.length - 1])
 						.then(() =>
@@ -79,17 +80,18 @@ const updateExperience = (req, res) => {
 								data: experienceData
 							})
 						);
+				} else {
+					return res.status(200).send({
+						success: true,
+						message: "Experience Updated",
+						data: experienceData
+					});
 				}
-				return res.status(200).send({
-					success: true,
-					message: "Experience Updated",
-					data: experienceData
-				});
 			});
 		})
 		.catch(error => {
-			if (req.file) {
-				const urlSplit = req.file.split("/");
+			if (imageUrl) {
+				const urlSplit = imageUrl.split("/");
 				return deleteFile(urlSplit[urlSplit.length - 1])
 					.then(() => {
 						return res.status(500).send({
