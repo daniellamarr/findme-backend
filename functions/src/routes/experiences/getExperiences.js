@@ -22,7 +22,7 @@ const getExperiences = (req, res) => {
 		.where("type", "==", type);
 	// Query Params
 	if (req.query.category) {
-		experienceRef = experienceRef.where("categoryId", "==", req.query.category);
+		experienceRef = experienceRef.where("category", "==", req.query.category);
 	}
 	return experienceRef
 		.get()
@@ -40,7 +40,6 @@ const getExperiences = (req, res) => {
 			});
 		})
 		.catch(error =>{
-			console.log(error)
 			res.status(500).send({
 				success: false,
 				message: error.message

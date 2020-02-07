@@ -15,6 +15,7 @@ const createExperience = (req, res) => {
 		tags,
 		type
 	} = req.body;
+	const [imageUrl] = req.files;
 	const types = {
 		event: {
 			startDate: req.body.startDate || null,
@@ -38,7 +39,7 @@ const createExperience = (req, res) => {
 		!capacity ||
 		!contactPhone ||
 		!areExtraValuesComplete ||
-		!req.file
+		!imageUrl
 	) {
 		return res.status(400).json({
 			success: false,
@@ -57,7 +58,7 @@ const createExperience = (req, res) => {
 			type,
 			...types[type],
 			tags: tags || [],
-			imageUrl: req.file,
+			imageUrl,
 			user: req.payload.id,
 			updated: new Date().getTime(),
 			created: new Date().getTime()
@@ -69,14 +70,14 @@ const createExperience = (req, res) => {
 				data: {
 					id: docRef.id,
 					...req.body,
-					imageUrl: req.file,
+					imageUrl,
 					tags: tags || [],
 					user: req.payload.id
 				}
 			});
 		})
 		.catch(error => {
-			const urlSplit = req.file.split("/");
+			const urlSplit = imageUrl.split("/");
 			return deleteFile(urlSplit[urlSplit.length - 1])
 				.then(() => {
 					return res.status(500).send({

@@ -4,6 +4,7 @@ const authRouter = require('./auth');
 const userRouter = require('./users');
 const categoryRouter = require('./categories');
 const experienceRouter = require('./experiences');
+const commentRouter = require('./comments');
 
 const routes = express();
 routes.use(bodyParser.urlencoded({extended: false}));
@@ -27,5 +28,6 @@ routes.use('/auth', authRouter);
 routes.use('/users', userRouter);
 routes.use('/categories', categoryRouter);
 routes.use('/experiences', experienceRouter);
+routes.use('/comments', commentRouter);
 
 module.exports = routes;

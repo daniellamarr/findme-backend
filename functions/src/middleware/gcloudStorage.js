@@ -22,6 +22,25 @@ const deleteFile = filename =>
 		});
 	});
 
+const constructFileUploadPromise = (filename, file) => {
+	const extension = filename.split(".")[1];
+	const uniqueFilename = `${uuid()}.${extension}`;
+	const imageFile = bucket.file(uniqueFilename);
+	return new Promise((resolve, reject) => {
+		file
+			.pipe(imageFile.createWriteStream())
+			.on("error", reject)
+			.on("finish", () => {
+				imageFile.makePublic((err, apiRes) => {
+					if (err) {
+						reject(err);
+					}
+					resolve(`https://storage.googleapis.com/${config.storageBucket}/${uniqueFilename}`);
+				});
+			});
+	});
+};
+
 const fileUpload = (req, res, next) => {
 	const busboy = new Busboy({
 		headers: req.headers,
@@ -31,51 +50,38 @@ const fileUpload = (req, res, next) => {
 	});
 
 	const fields = {};
-	let fileWrite;
+	const fileWrites = [];
 
 	busboy.on("field", (key, value) => {
 		fields[key] = value;
 	});
 
 	busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
+		console.log("File Encountered");
 		if (!filename) {
 			req.body = fields;
 			return next();
 		}
-		const extension = filename.split(".")[1];
-		const uniqueFilename = `${uuid()}.${extension}`;
-		const imageFile = bucket.file(uniqueFilename);
-		console.log(`Handling file upload field ${fieldname}: ${uniqueFilename}`);
+		console.log(`Handling file upload field ${fieldname}: ${filename}`);
 
-		fileWrite = new Promise((resolve, reject) => {
-			file
-				.pipe(imageFile.createWriteStream())
-				.on("error", reject)
-				.on("finish", () => {
-					imageFile.makePublic((err, apiRes) => {
-            if (err) {
-              reject(err);
-            }
-            return resolve(
-              `https://storage.googleapis.com/${config.storageBucket}/${uniqueFilename}`
-            );
-          });
-				});
-		});
+		fileWrites.push(constructFileUploadPromise(filename, file));
+
+		console.log("File Pushed unto filewrites array");
 		return true;
 	});
 
 	busboy.on("finish", () => {
-		if (fileWrite) {
-			fileWrite
-				.then(url => {
+		if (fileWrites.length > 0) {
+			Promise.all(fileWrites)
+				.then(files => {
 					req.body = fields;
-					req.file = url;
+					req.files = files;
 					return next();
 				})
 				.catch(next);
 		} else {
 			req.body = fields;
+			req.files = [];
 			return next();
 		}
 		return true;
