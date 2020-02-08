@@ -19,7 +19,10 @@ const addComment = (req, res) => {
 		.collection("comments").add({
             content,
             images: req.files || [],
-            experienceId
+			experience,
+			user: req.payload.id,
+			updated: new Date().getTime(),
+			created: new Date().getTime()
         }).then(docRef => {
             return res.status(201).send({
 				success: true,
@@ -28,7 +31,7 @@ const addComment = (req, res) => {
                     id: docRef.id,
                     content,
 					images: req.files || [],
-                    experience: experienceId,
+                    experience,
                     user: req.payload.id
 				}
 			});
