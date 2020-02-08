@@ -6,7 +6,7 @@ const generateToken = require('../../helpers/generateToken');
 const db = admin.firestore();
 
 const signup = (req, res) => {
-  const {type} = req.body;
+  const {type, gender} = req.body;
   const {user, additionalUserInfo} = req.socialAuth;
   const {email, photoURL, phoneNumber} = user;
   const {profile} = additionalUserInfo;
@@ -29,10 +29,12 @@ const signup = (req, res) => {
       const userDetails = {
         firstname,
         lastname,
+        gender,
         email,
         phoneNumber,
         photo: photoURL,
-        interests: [],
+        genderInterests: [],
+        availabilityStatus: "Available",
         type,
         updated: new Date().getTime(),
         created: new Date().getTime()
