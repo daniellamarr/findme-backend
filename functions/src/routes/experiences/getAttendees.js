@@ -1,54 +1,63 @@
+/* eslint-disable promise/always-return */
 /* eslint-disable promise/no-nesting */
 const admin = require("firebase-admin");
 
 const db = admin.firestore();
 
 const getAttendees = (req, res) => {
-	//const {id: userId} = req.payload;
-	const userId = "kjjxTGXIvcKy2u4dUe1f";
+	const {id: userId} = req.payload;
+	// const userId = "kjjxTGXIvcKy2u4dUe1f";
 	const {experienceId} = req.query;
 	const experienceRef = db.collection("experiences").doc(experienceId);
 	const userRef = db.collection("users").doc(userId);
 
-	let userData;
-	let experienceData;
-
-	return Promise.all(experienceRef.get(), userRef.get())
-		.then(docRefs => {
-			const [experienceDocRef, userDocRef] = docRefs;
-			experienceData = {...experienceDocRef.data()};
-			userData = {...userDocRef.data()};
-			const attendeesPromises = experienceData.attendees.map(attendeeId => {
-				return db
-					.collection("users")
-					.doc(attendeeId)
-					.get();
-			});
-			return Promise.all(attendeesPromises);
-		})
-		.then(attendeesDocRefs => {
-			let attendeesData = attendeesDocRefs.map(attendeeDocRef => {
-				return {...attendeeDocRef.data()};
-			});
-
-			if (userId !== experienceData.user) {
-				attendeesData = attendeesData.filter(attendee => {
-					return userData.genderInterests.includes(attendee.gender);
+	return userRef.get()
+		.then(snapshot => {
+			const signedInUser = snapshot.data();
+			return experienceRef.get()
+				.then(snapshot => {
+					let data = [];
+					const {attendees} = snapshot.data();
+					const attendeesPromise = attendees.map(attendee => {
+						return db.collection("users")
+							.doc(attendee)
+							.get()
+							.then(snapshot => {
+								const user = snapshot.data();
+								user.id = snapshot.id;
+								data.push({
+									id: user.id,
+									name: `${user.firstname} ${user.lastname}`,
+									photo: user.photo,
+									availabilityStatus: user.availabilityStatus,
+									gender: user.gender,
+									genderInterests: user.genderInterests,
+									interests: user.interests
+								});
+								data = data.filter(attendee => {
+									return signedInUser.genderInterests.includes(attendee.gender);
+								});
+								data = data.filter(attendee => {
+									return attendee.availabilityStatus === 'Available';
+								});
+							});
+					});
+					return Promise.all(attendeesPromise)
+						.then(() => {
+							return res.status(200).send({
+								success: true,
+								message: "Attendees Retrieved",
+								data
+							});
+						})
+				})
+				.catch(error => {
+					return res.status(500).json({
+						success: false,
+						message: error.message,
+						stack: error.stack
+					});
 				});
-			}
-
-			return res.status(200).json({
-				success: true,
-				message: "Attendees Retrieved",
-				data: attendeesData
-			});
-		})
-		.catch(error => {
-			return res.status(500).json({
-				success: false,
-				message: error.message,
-				stack: error.stack
-			});
 		});
 };
 
