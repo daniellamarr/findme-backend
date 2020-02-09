@@ -6,7 +6,6 @@ const db = admin.firestore();
 
 const getAttendees = (req, res) => {
 	const {id: userId} = req.payload;
-	// const userId = "kjjxTGXIvcKy2u4dUe1f";
 	const {experienceId} = req.query;
 	const experienceRef = db.collection("experiences").doc(experienceId);
 	const userRef = db.collection("users").doc(userId);
