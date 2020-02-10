@@ -32,6 +32,7 @@ const signup = (req, res) => {
         email,
         phoneNumber,
         photo: photoURL,
+        interests: [],
         genderInterests: [],
         availabilityStatus: "Available",
         type,
