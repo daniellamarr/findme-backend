@@ -33,6 +33,8 @@ const signup = (req, res) => {
         phoneNumber,
         photo: photoURL,
         interests: [],
+        genderInterests: [],
+        availabilityStatus: "Available",
         type,
         updated: new Date().getTime(),
         created: new Date().getTime()
