@@ -34,10 +34,8 @@ const getAttendees = (req, res) => {
 									interests: user.interests
 								});
 								data = data.filter(attendee => {
-									return signedInUser.genderInterests.includes(attendee.gender);
-								});
-								data = data.filter(attendee => {
-									return attendee.availabilityStatus === 'Available';
+									return signedInUser.genderInterests.includes(attendee.gender) &&
+										attendee.availabilityStatus === 'Available';
 								});
 							});
 					});
