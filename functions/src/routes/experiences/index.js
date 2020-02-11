@@ -7,6 +7,7 @@ const updateExperience = require("./updateExperience");
 const attendExperience = require("./attendExperience");
 const getAttendees = require("./getAttendees");
 const leaveExperience = require('./leaveExperience');
+const experienceHistory = require('./experienceHistory');
 
 const experienceRouter = Router();
 
@@ -23,5 +24,7 @@ experienceRouter.put("/:id", verifyToken, fileUpload, updateExperience);
 experienceRouter.delete("/:id", verifyToken, deleteExperience);
 
 experienceRouter.get("/attendees", verifyToken, getAttendees);
+
+experienceRouter.get("/history", verifyToken, experienceHistory);
 
 module.exports = experienceRouter;
