@@ -19,7 +19,8 @@ const attendExperience = (req, res) => {
 				});
 			}
 			const oldExperienceData = {...docRef.data()};
-			oldExperienceData.attendees.push(userId);
+			oldExperienceData.currentAttendees.push(userId);
+			oldExperienceData.allAttendees.push(userId);
 
 			const experienceData = {
 				...oldExperienceData,

@@ -3,18 +3,13 @@ const admin = require("firebase-admin");
 
 const db = admin.firestore();
 
-const experienceHistory = (req, res) => {
-    const {id: userId} = req.payload;
-    const {type = 'all'} = req.query;
+const searchExperience = (req, res) => {
     let experienceRef = db.collection("experiences");
 
-    if (type === 'current') {
-        experienceRef = experienceRef
-            .where("allAttendees", "array-contains", userId)
-            .where("status", "==", "Open")
-    } else {
-        experienceRef = experienceRef
-            .where("allAttendees", "array-contains", userId)
+    // Object.keys(req.query).forEach(key => {});
+    for(const key in req.query){
+        const queryString = key.includes("attendees") ? "array-contains" : "==";
+        experienceRef = experienceRef.where(key, queryString, req.query[key]);
     }
     
     return experienceRef
@@ -25,7 +20,7 @@ const experienceHistory = (req, res) => {
             });
             return res.status(200).send({
                 success: true,
-                message: "History Retrieved",
+                message: "Search Complete",
                 data
             });
         })
@@ -38,4 +33,4 @@ const experienceHistory = (req, res) => {
         });
 };
 
-module.exports = experienceHistory;
+module.exports = searchExperience;

@@ -16,8 +16,8 @@ const getAttendees = (req, res) => {
 			return experienceRef.get()
 				.then(snapshot => {
 					let data = [];
-					const {attendees} = snapshot.data();
-					const attendeesPromise = attendees.map(attendee => {
+					const {currentAttendees} = snapshot.data();
+					const attendeesPromise = currentAttendees.map(attendee => {
 						return db.collection("users")
 							.doc(attendee)
 							.get()

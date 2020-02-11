@@ -19,7 +19,7 @@ const leaveExperience = (req, res) => {
 				});
 			}
 			const oldExperienceData = {...docRef.data()};
-			oldExperienceData.attendees = oldExperienceData.attendees.filter(attendeeId => {
+			oldExperienceData.currentAttendees = oldExperienceData.currentAttendees.filter(attendeeId => {
                 return attendeeId !== userId;
             });
 
