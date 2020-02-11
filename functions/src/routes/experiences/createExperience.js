@@ -61,6 +61,7 @@ const createExperience = (req, res) => {
 			attendees: [],
 			commentsAllowed: true,
 			imageUrl,
+			status: "Open",
 			user: req.payload.id,
 			updated: new Date().getTime(),
 			created: new Date().getTime()

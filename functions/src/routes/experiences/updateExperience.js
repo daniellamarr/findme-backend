@@ -13,14 +13,15 @@ const updateExperience = (req, res) => {
 		capacity,
 		contactPhone,
 		tags,
-		type
+		type,
+		status
 	} = req.body;
 	const {id} = req.params;
 	const [imageUrl] = req.files;
     if (!id) {
 		return res.status(400).json({
 			success: false,
-			message: "ID is required"
+			message: "Experience ID is required"
 		});
 	}
 	const types = {
@@ -44,7 +45,14 @@ const updateExperience = (req, res) => {
                     success: false,
                     message: 'Experience not found'
                 })
-            }
+			}
+			const oldExperienceData = {...docRef.data()};
+			if (userId !== oldExperienceData.user) {
+				return res.status(403).json({
+					success: false,
+					message: "You are unauthorized to perform this action"
+				});
+			}
 			const experienceReqData = {
 				title,
 				categoryId,
@@ -54,7 +62,8 @@ const updateExperience = (req, res) => {
 				description,
 				imageUrl: imageUrl || null,
 				tags: tags || [],
-				...types[type]
+				...types[type],
+				status
 			};
 			const filteredReqData = Object.keys(experienceReqData).reduce(
 				(newData, key) => {
@@ -63,7 +72,7 @@ const updateExperience = (req, res) => {
 				},
 				{}
 			);
-			const oldExperienceData = {...docRef.data()};
+			
 			const experienceData = {
 				...oldExperienceData,
 				...filteredReqData,
