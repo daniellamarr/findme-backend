@@ -10,7 +10,7 @@ const experienceHistory = (req, res) => {
 
     if (type === 'current') {
         experienceRef = experienceRef
-            .where("allAttendees", "array-contains", userId)
+            .where("currentAttendees", "array-contains", userId)
             .where("status", "==", "Open")
     } else {
         experienceRef = experienceRef
@@ -26,7 +26,7 @@ const experienceHistory = (req, res) => {
             return res.status(200).send({
                 success: true,
                 message: "History Retrieved",
-                data
+                data: type === 'current' ? data[0] : data
             });
         })
         .catch(error => {
