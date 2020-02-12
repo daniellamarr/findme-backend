@@ -5,17 +5,7 @@ const db = admin.firestore();
 
 const experienceHistory = (req, res) => {
     const {id: userId} = req.payload;
-    const {type = 'all'} = req.query;
-    let experienceRef = db.collection("experiences");
-
-    if (type === 'current') {
-        experienceRef = experienceRef
-            .where("currentAttendees", "array-contains", userId)
-            .where("status", "==", "Open")
-    } else {
-        experienceRef = experienceRef
-            .where("allAttendees", "array-contains", userId)
-    }
+    let experienceRef = db.collection("experiences").where("allAttendees", "array-contains", userId);
     
     return experienceRef
         .get()
@@ -26,7 +16,7 @@ const experienceHistory = (req, res) => {
             return res.status(200).send({
                 success: true,
                 message: "History Retrieved",
-                data: type === 'current' ? data[0] : data
+                data
             });
         })
         .catch(error => {
