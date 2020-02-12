@@ -3,8 +3,8 @@ const admin = require("firebase-admin");
 
 const db = admin.firestore();
 
-const attendExperience = (req, res) => {
-	const {id: userId} = req.payload;
+const leaveExperience = (req, res) => {
+    const {id: userId} = req.payload;
 	const {experienceId} = req.body;
 
 	const experienceRef = db.collection("experiences").doc(experienceId);
@@ -19,8 +19,9 @@ const attendExperience = (req, res) => {
 				});
 			}
 			const oldExperienceData = {...docRef.data()};
-			oldExperienceData.currentAttendees.push(userId);
-			oldExperienceData.allAttendees.push(userId);
+			oldExperienceData.currentAttendees = oldExperienceData.currentAttendees.filter(attendeeId => {
+                return attendeeId !== userId;
+            });
 
 			const experienceData = {
 				...oldExperienceData,
@@ -29,7 +30,7 @@ const attendExperience = (req, res) => {
 			return experienceRef.update(experienceData).then(() => {
 				return res.status(200).send({
 					success: true,
-					message: "Hurray you're now an attendee",
+					message: "Thank you for attending the experience",
 					data: experienceData
 				});
 			});
@@ -42,4 +43,4 @@ const attendExperience = (req, res) => {
 		});
 };
 
-module.exports = attendExperience;
+module.exports = leaveExperience;

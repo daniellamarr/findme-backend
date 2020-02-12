@@ -58,9 +58,11 @@ const createExperience = (req, res) => {
 			type,
 			...types[type],
 			tags: tags && JSON.parse(tags) || [],
-			attendees: [],
+			currentAttendees: [],
+			allAttendees: [],
 			commentsAllowed: true,
 			imageUrl,
+			status: "Open",
 			user: req.payload.id,
 			updated: new Date().getTime(),
 			created: new Date().getTime()
