@@ -6,13 +6,14 @@ const db = admin.firestore();
 
 const connectToUser = (req, res) => {
 	const {id: userId} = req.payload;
-	const {secondUserId} = req.body;
-	if (!secondUserId) {
+	const {secondUserId, experienceId} = req.body;
+	if (!secondUserId || !experienceId) {
 		return res.status(400).json({
 			success: false,
 			message: "Missing some fields"
 		});
 	}
+	const experienceRef = db.collection("experiences").doc(experienceId);
 	return chatkit
 		.createRoom({
 			id: `${userId}-${secondUserId}-room`,
@@ -20,6 +21,19 @@ const connectToUser = (req, res) => {
 			name: `${userId}-${secondUserId}-room`,
 			isPrivate: true,
 			userIds: [secondUserId]
+		})
+		.then(() => {
+			return experienceRef.get();
+		})
+		.then(docRef => {
+			const oldExperienceData = {...docRef.data()};
+			oldExperienceData.roomIds.push(`${userId}-${secondUserId}-room`);
+			
+			const experienceData = {
+				...oldExperienceData,
+				updated: new Date().getTime()
+			};
+			return experienceRef.update(experienceData);
 		})
 		.then(() => {
 			return res.status(201).send({

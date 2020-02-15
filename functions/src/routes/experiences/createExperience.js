@@ -60,6 +60,7 @@ const createExperience = (req, res) => {
 			tags: tags && JSON.parse(tags) || [],
 			currentAttendees: [],
 			allAttendees: [],
+			roomIds: [],
 			commentsAllowed: true,
 			imageUrl,
 			status: "Open",
