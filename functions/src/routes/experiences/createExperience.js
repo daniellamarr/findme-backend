@@ -13,6 +13,7 @@ const createExperience = (req, res) => {
 		capacity,
 		contactPhone,
 		tags,
+		latlng,
 		type
 	} = req.body;
 	const [imageUrl] = req.files;
@@ -39,7 +40,8 @@ const createExperience = (req, res) => {
 		!capacity ||
 		!contactPhone ||
 		!areExtraValuesComplete ||
-		!imageUrl
+		!imageUrl ||
+		!latlng
 	) {
 		return res.status(400).json({
 			success: false,
@@ -53,6 +55,7 @@ const createExperience = (req, res) => {
 			category,
 			description,
 			address,
+			latlng,
 			capacity,
 			contactPhone,
 			type,

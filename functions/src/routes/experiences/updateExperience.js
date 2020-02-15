@@ -7,9 +7,10 @@ const db = admin.firestore();
 const updateExperience = (req, res) => {
 	const {
 		title,
-		categoryId,
+		category,
 		description,
 		address,
+		latlng,
 		capacity,
 		contactPhone,
 		tags,
@@ -55,8 +56,9 @@ const updateExperience = (req, res) => {
 			}
 			const experienceReqData = {
 				title,
-				categoryId,
+				category,
 				address,
+				latlng,
 				capacity,
 				contactPhone,
 				description,
