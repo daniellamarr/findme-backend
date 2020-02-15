@@ -1,6 +1,6 @@
 /* eslint-disable promise/no-nesting */
 const admin = require("firebase-admin");
-const chatkit = require("../../helpers/chatkit");
+const {chatkit} = require("../../helpers/chatkit");
 
 const db = admin.firestore();
 

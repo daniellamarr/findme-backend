@@ -2,6 +2,7 @@
 const admin = require("firebase-admin");
 const searchCollection = require("../../helpers/searchCollection");
 const generateToken = require("../../helpers/generateToken");
+const {chatkit} = require('../../helpers/chatkit');
 
 const db = admin.firestore();
 

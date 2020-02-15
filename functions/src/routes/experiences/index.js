@@ -10,7 +10,6 @@ const leaveExperience = require('./leaveExperience');
 const experienceHistory = require('./experienceHistory');
 const searchExperience = require('./searchExperience');
 const currentExperience = require('./currentExperience');
-const deleteRoomIds = require('./deleteRoomIds');
 
 const experienceRouter = Router();
 
@@ -33,7 +32,5 @@ experienceRouter.get("/history", verifyToken, experienceHistory);
 experienceRouter.get("/current", verifyToken, currentExperience);
 
 experienceRouter.get('/search', verifyToken, searchExperience);
-
-experienceRouter.delete('/rooms/:experienceId',deleteRoomIds);
 
 module.exports = experienceRouter;

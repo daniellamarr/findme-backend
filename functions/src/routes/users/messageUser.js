@@ -1,8 +1,5 @@
 /* eslint-disable promise/no-nesting */
-const admin = require("firebase-admin");
-const chatkit = require("../../helpers/chatkit");
-
-const db = admin.firestore();
+const {chatkit} = require("../../helpers/chatkit");
 
 const messageUser = (req, res) => {
 	const {id: userId} = req.payload;

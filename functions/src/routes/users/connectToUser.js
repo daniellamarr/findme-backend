@@ -1,6 +1,6 @@
 /* eslint-disable promise/no-nesting */
 const admin = require("firebase-admin");
-const chatkit = require("../../helpers/chatkit");
+const {chatkit} = require("../../helpers/chatkit");
 
 const db = admin.firestore();
 
@@ -28,7 +28,7 @@ const connectToUser = (req, res) => {
 		.then(docRef => {
 			const oldExperienceData = {...docRef.data()};
 			oldExperienceData.roomIds.push(`${userId}-${secondUserId}-room`);
-			
+
 			const experienceData = {
 				...oldExperienceData,
 				updated: new Date().getTime()
