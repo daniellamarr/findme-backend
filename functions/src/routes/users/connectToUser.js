@@ -18,8 +18,8 @@ const connectToUser = (req, res) => {
 			id: `${userId}-${secondUserId}-room`,
 			creatorId: userId,
 			name: `${userId}-${secondUserId}-room`,
-            isPrivate: true,
-            userIds: [secondUserId]
+			isPrivate: true,
+			userIds: [secondUserId]
 		})
 		.then(() => {
 			return res.status(201).send({
@@ -33,7 +33,7 @@ const connectToUser = (req, res) => {
 		.catch(error => {
 			return res.status(500).send({
 				success: false,
-				message: error.message
+				message: error.description || error.message
 			});
 		});
 };
