@@ -1,62 +1,69 @@
 /* eslint-disable promise/no-nesting */
-const admin = require('firebase-admin');
-const searchCollection = require('../../helpers/searchCollection');
-const generateToken = require('../../helpers/generateToken');
+const admin = require("firebase-admin");
+const searchCollection = require("../../helpers/searchCollection");
+const generateToken = require("../../helpers/generateToken");
+const {chatkit} = require('../../helpers/chatkit');
 
 const db = admin.firestore();
 
 const signup = (req, res) => {
-  const {type} = req.body;
-  const {user, additionalUserInfo} = req.socialAuth;
-  const {email, photoURL, phoneNumber} = user;
+	const {type} = req.body;
+	const {user, additionalUserInfo} = req.socialAuth;
+	const {email, photoURL, phoneNumber} = user;
   const {profile} = additionalUserInfo;
-  return searchCollection('users', { email }, ['email'])
-    .then(check => {
-      if (check) {
-        return res.status(409).send({
-          success: false,
-          message: `${email} is already signed up, you should login instead`
-        });
-      }
-      let firstname, lastname;
-      if (type === 'facebook') {
-        firstname = profile.first_name;
-        lastname = profile.last_name;
-      } else if (type === 'google') {
-        firstname = profile.given_name;
-        lastname = profile.family_name;
-      }
-      const userDetails = {
-        firstname,
-        lastname,
-        email,
-        phoneNumber,
-        photo: photoURL,
-        interests: [],
-        genderInterests: [],
-        availabilityStatus: "Available",
-        type,
-        updated: new Date().getTime(),
-        created: new Date().getTime()
-      }
-      return db.collection('users')
-        .add(userDetails)
-        .then(snap => {
-          userDetails.id = snap.id;
-          const token = generateToken(userDetails, '1y');
-          return res.status(201).send({
-            success: true,
-            message: 'You have successfully signed up to Findme',
-            data: {
-              user: userDetails,
-              token
-            }
-          })
-        })
-    })
+  let userDetails,token;
+	return searchCollection("users", {email}, ["email"])
+		.then(check => {
+			if (check) {
+				return res.status(409).send({
+					success: false,
+					message: `${email} is already signed up, you should login instead`
+				});
+			}
+			let firstname, lastname;
+			if (type === "facebook") {
+				firstname = profile.first_name;
+				lastname = profile.last_name;
+			} else if (type === "google") {
+				firstname = profile.given_name;
+				lastname = profile.family_name;
+			}
+			userDetails = {
+				firstname,
+				lastname,
+				email,
+				phoneNumber,
+				photo: photoURL,
+				interests: [],
+				genderInterests: [],
+				availabilityStatus: "Available",
+				type,
+				updated: new Date().getTime(),
+				created: new Date().getTime()
+			};
+			return db.collection("users").add(userDetails);
+		})
+		.then(snap => {
+			userDetails.id = snap.id;
+			token = generateToken(userDetails, "1y");
+			return chatkit.createUser({
+				id: userDetails.id,
+				name: `${firstname}_${lastname}`
+			});
+		})
+		.then(() => {
+			return res.status(201).send({
+				success: true,
+				message: "You have successfully signed up to Findme",
+				data: {
+					user: userDetails,
+					token
+				}
+			});
+		})
 		.catch(error => {
 			return res.status(500).json({
-        success: false,
+				success: false,
 				message: error.message
 			});
 		});
