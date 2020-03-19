@@ -18,8 +18,8 @@ const createExperience = (req, res) => {
 	const [imageUrl] = req.files;
 	const types = {
 		event: {
-			startDate: req.body.startDate || null,
-			endDate: req.body.endDate || null,
+			startDate: Number(req.body.startDate) || null,
+			endDate: Number(req.body.endDate) || null,
 			price: req.body.price || null
 		},
 		place: {

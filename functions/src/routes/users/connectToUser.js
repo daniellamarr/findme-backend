@@ -45,6 +45,7 @@ const connectToUser = (req, res) => {
 			});
 		})
 		.catch(error => {
+			console.log(error)
 			return res.status(500).send({
 				success: false,
 				message: error.description || error.message
